@@ -17,6 +17,7 @@ default_img = Image.open("assets/1.jpg")
 
 root = tkinter.Tk()
 root.title("Robot app")
+
 # root.geometry("600x600+150+150")
 
 dongco_label = tkinter.Label(root, text="Dieu khien dong co")
@@ -59,18 +60,22 @@ cv2_img = ImageTk.PhotoImage(cv2_img)
 label_cv = tkinter.Label(manhinhchinh, image=cv2_img)
 label_cv.grid(row=1, column=0)
 
+#global variable
 get_image_running = 0
 send_MQTT_running = 0
 cam = cv2.VideoCapture()
 ai_result = 0
-
+ai_match_value = 0
+check_first = 0
+check_second = 0
+check_final = 0
 # Load the model
 model = load_model("keras_Model.h5", compile=False)
 # Load the labels
 class_names = open("labels.txt", "r").readlines()
 
 def show_img():
-    global cam, label_cv, ai_result
+    global cam, label_cv, ai_result, ai_match_value
     ret, frame = cam.read()
     cv2_img = default_img
     if get_image_running:
@@ -96,7 +101,7 @@ def show_img():
         print("Class:", class_name[2:], end="")
         print("Confidence Score:", str(np.round(confidence_score * 100))[:-2], "%")
         ai_result = class_name[2:]
-
+        ai_match_value = np.round(confidence_score * 100)
     cv2_img = cv2_img.resize((320, 240))
     cv2_img = ImageTk.PhotoImage(cv2_img)
     label_cv.config(image=cv2_img)
@@ -154,9 +159,10 @@ def send_to_MQTT():
     MQTT_loop()
 
 def MQTT_loop():
-    global ai_result, send_MQTT_running
+    global ai_result, send_MQTT_running, ai_match_value
     mqttClient.publish(MQTT_TOPIC_PUB, ai_result, 0, True)
     print("SEND TO MQTT",ai_result)
+    print(ai_match_value)
     if send_MQTT_running:
         root.after(50, MQTT_loop)
     else:
