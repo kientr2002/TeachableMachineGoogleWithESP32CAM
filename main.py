@@ -7,12 +7,35 @@ import ttkbootstrap as ttk
 from PIL import Image, ImageTk
 import pathlib
 import time
+import json
+
+############################
+### READ JSON AND CONFIG ###
+############################
+
+f = open('setting.json')
+ 
+# returns JSON object as
+# a dictionary
+data = json.load(f)
+
+setting_value = {
+    "mqttUsername": data["mqttUsername"],
+    "mqttPassword": data["mqttPassword"],
+    "confidenScoreConfirm": data["confidenScoreConfirm"],
+    "timesConfirm": data["timesConfirm"],
+    "autoLoadModel": data["autoLoadModel"]
+}
+
+##############
+### CONFIG ###
+##############
 
 # CONFIG MQTT
 MQTT_SERVER = "mqtt.ohstem.vn"
 MQTT_PORT = 1883
-MQTT_USERNAME = "internK"
-MQTT_PASSWORD = "123456"
+MQTT_USERNAME = setting_value["mqttUsername"]
+MQTT_PASSWORD = setting_value["mqttPassword"]
 MQTT_TOPIC_PUB = MQTT_USERNAME + "/feeds/V1"
 MQTT_TOPIC_PUB2 = MQTT_USERNAME + "/feeds/V2"
 MQTT_TOPIC_SUB = MQTT_USERNAME + "/feeds/V3"
@@ -20,8 +43,8 @@ MQTT_TOPIC_SUB = MQTT_USERNAME + "/feeds/V3"
 # CONFIG DEFAULT IMAGE WHEN THE CAMERA IS NOT OPEN
 DEFAULT_IMG = Image.open("assets/bo.bmp")
 
-CONFIDENCE_SCORE_CONFIRM = np.float64(80)
-TIMES_CONFIRM = 10
+CONFIDENCE_SCORE_CONFIRM = np.float64(int(setting_value["confidenScoreConfirm"]))
+TIMES_CONFIRM = int(setting_value["timesConfirm"])
 AREA = 1
 
 root = tk.Tk()
@@ -30,33 +53,6 @@ root.resizable(False, False)
 # root.geometry("600x600+150+150")
 container = tk.Frame(root)
 container.pack(padx=10, pady=10)
-
-# dongco_label = ttk.Label(root, text="Dieu khien dong co")
-# dongco_label.grid(row=0, column=0)
-# cam_label = ttk.Label(root, text="Dieu khien cam")
-# cam_label.grid(row=0, column=1)
-# dongco = tk.Frame()
-# cam = tk.Frame()
-# dongco.grid(row=1, column=0)
-# cam.grid(row=1, column=1)
-
-# tien = ttk.Button(dongco, text="Tien")
-# tien.grid(row=0, column=1)
-# lui = ttk.Button(dongco, text="Lui")
-# lui.grid(row=2, column=1)
-# trai = ttk.Button(dongco, text="Trai")
-# trai.grid(row=1, column=0)
-# phai = ttk.Button(dongco, text="Phai")
-# phai.grid(row=1, column=2)
-
-# xoaylen = ttk.Button(cam, text="Xoay len")
-# xoaylen.grid(row=0, column=1)
-# xoayxuong = ttk.Button(cam, text="Xoay xuong")
-# xoayxuong.grid(row=2, column=1)
-# xoaytrai = ttk.Button(cam, text="Xoay trai")
-# xoaytrai.grid(row=1, column=0)
-# xoayphai = ttk.Button(cam, text="Xoay phai")
-# xoayphai.grid(row=1, column=2)
 
 # Global variable
 get_image_running = 0
@@ -88,17 +84,19 @@ for item in get_model.iterdir():
 # Auto load model bienbao when program start
 def auto_load_model():
     global model, class_names, num_of_model_loaded
+    autoLoadModel = setting_value["autoLoadModel"]
     # Load the model
-    model = load_model("models/bienbao/keras_Model.h5", compile=False)
+    keras_path = "models/" + autoLoadModel + "/keras_Model.h5"
+    class_names_path = "models/" + autoLoadModel + "/labels.txt"
+    model = load_model(keras_path, compile=False)
     # Load the labels
-    class_names = open("models/bienbao/labels.txt", "r").readlines()
+    class_names = open(class_names_path, "r").readlines()
     arr_model.append(model)
-    arr_model_name.append("bienbao")
+    arr_model_name.append(autoLoadModel)
     arr_class_names.append(class_names)
     num_of_model_loaded += 1
-
-
-# auto_load_model()
+    print("Auto load model " + autoLoadModel + " sucessful")
+    message["text"] = "Auto load model " + autoLoadModel + " sucessful"
 
 # Function load model
 def my_load_model(model_choose):
@@ -184,11 +182,11 @@ def show_img():
                         if AREA == 1:
                             mqttClient.publish(MQTT_TOPIC_PUB, ai_result, 0, True)
                             count_ai_confirm = 0
-                            AREA = 2
-                        elif AREA == 2:
-                            mqttClient.publish(MQTT_TOPIC_PUB2, ai_result, 0, True)
-                            count_ai_confirm = 0
-                            AREA = 3
+                        #     AREA = 2
+                        # elif AREA == 2:
+                        #     mqttClient.publish(MQTT_TOPIC_PUB2, ai_result, 0, True)
+                        #     count_ai_confirm = 0
+                        #     AREA = 3
                 else:
                     count_ai_confirm = 0
 
@@ -284,13 +282,68 @@ def close_send_MQTT():
     global send_MQTT_running
     send_MQTT_running = 0
 
-
 #################
 ### tkinter #####
 #################
 
+def setting_popup():
+    global setting_value
+    setting_window = tk.Toplevel(root)
+    setting_window.title("Setting")
+
+    number_of_var = len(setting_value)
+    variable_frame = [tk.Frame(setting_window) for i in range(number_of_var)]
+    setting_key = list(setting_value.keys())
+    var = [tk.StringVar() for i in range(number_of_var)]
+    for i in range(number_of_var):
+        variable_frame[i].grid(row=i, column=0, pady=5)
+        variable_label = ttk.Label(variable_frame[i], text=setting_key[i], width=25)
+        variable_label.pack(side="left", fill="both", padx=(15, 0))
+        var[i].set(setting_value[setting_key[i]])
+        variable_value = tk.Entry(variable_frame[i], textvariable=var[i], width=15)
+        variable_value.pack(side="left", fill="both", padx=(0, 15))
+
+    button_save = ttk.Button(setting_window, text="Save", width=15, command=lambda: print("SAVE"))
+    button_save.grid(row=number_of_var, column=0, pady=10)
+    
+### Menu bar ###
+
+# create a menubar
+menubar = ttk.Menu(root)
+root.config(menu=menubar)
+
+# create the file_menu
+file_menu = ttk.Menu(menubar, tearoff=False)
+
+# add menu items to the File menu
+file_menu.add_command(label='New', command=lambda: print("New"))
+file_menu.add_command(label='Open', command=lambda: print("Open"))
+file_menu.add_command(label='Close', command=lambda: print("Close"))
+# file_menu.add_separator()
+
+# add a submenu
+sub_menu = ttk.Menu(file_menu, tearoff=False)
+sub_menu.add_command(label='Keyboard Shortcuts')
+sub_menu.add_command(label='Color Themes')
+
+# add the File menu to the menubar
+file_menu.add_cascade(label="Preferences", menu=sub_menu)
+
+# add Exit menu item
+file_menu.add_separator()
+file_menu.add_command(label='Exit', command=root.destroy)
+
+menubar.add_cascade(label="File", menu=file_menu, underline=0)
+# create the Help menu
+setting_menu = ttk.Menu(menubar, tearoff=False)
+
+setting_menu.add_command(label='Setting', command=setting_popup)
+
+# add the Help menu to the menubar
+menubar.add_cascade(label="Setting", menu=setting_menu, underline=0)
+
 ### Main screen ###
-main_screen = tk.Frame(container)
+main_screen = ttk.Frame(container)
 main_screen.grid(row=0, column=0, padx=(0, 20))
 
 main_screen_label = ttk.Label(main_screen, text="MAIN SCREEN", font=("Arial", 20))
@@ -376,5 +429,7 @@ button_close_send_MQTT.pack(side="top", fill="both")
 # text = ttk.LabelFrame(terminal_screen_text, text="Output")
 # text.pack()
 #####
+
+# auto_load_model()
 
 root.mainloop()
