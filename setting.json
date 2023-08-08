@@ -1,7 +1,1 @@
-{
-    "mqttUsername": "internKhoi",
-    "mqttPassword": "123456",
-    "confidenScoreConfirm": "80",
-    "timesConfirm": "5",
-    "autoLoadModel": "chuachay"
-}
+{"camIP": "192.168.1.56", "autoLoadModel": "chuachay", "confidenScoreConfirm": "80", "timesConfirm": "3", "mqttUsername": "internK", "mqttPassword": "123456", "defaultPublishFeed": "V1"}
