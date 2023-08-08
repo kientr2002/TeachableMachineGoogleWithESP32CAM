@@ -8,5 +8,7 @@
   * You also have the option to purchase the same device from here:
     - [Robot Rover](https://ohstem.vn/product/robot-stem-rover/)
     - [ESP32 Cam](https://hshop.vn/products/kit-rf-thu-phat-wifi-ble-esp32-cam)
-  ![Robot Rover](https://github.com/kientr2002/TeachableMachineGoogleWithESP32CAM/blob/main/image/rover.jpg)
+![Robot Rover](https://github.com/kientr2002/TeachableMachineGoogleWithESP32CAM/blob/main/image/rover.jpg)
+* Tutorial Settings:
+  
   
