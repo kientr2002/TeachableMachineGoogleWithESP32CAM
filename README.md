@@ -25,6 +25,8 @@
   ### `pip install ttkbootstrap`
   ### `pip install pathlib`
   ### `pip install DateTime`
+* Ohstem Settings:
+  * First, you open website [App Ohstem](https://app.ohstem.vn/), Click "Bảng điều khiển IoT" -> "Tạo Mới". You will have a simple server of Ohstem:
   
   
   
