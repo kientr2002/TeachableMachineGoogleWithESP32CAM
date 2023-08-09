@@ -37,17 +37,16 @@
     ![Ohstem App](https://github.com/kientr2002/TeachableMachineGoogleWithESP32CAM/blob/main/image/Server5.png)
     ![Ohstem App](https://github.com/kientr2002/TeachableMachineGoogleWithESP32CAM/blob/main/image/Block1.png)
     ![Ohstem App](https://github.com/kientr2002/TeachableMachineGoogleWithESP32CAM/blob/main/image/Block2.png)
+    ![Ohstem App](https://github.com/kientr2002/TeachableMachineGoogleWithESP32CAM/blob/main/image/Block4.png)
    * You will upload by click like this picture, choose "import project" and choose file "RoverProject.json.json" in folder rover. Wait until this file import complete. In this time, you can set up your rover and connect with laptop. before click run, you should install [firmware](https://fw.ohstem.vn/) and necessary library.
     ![Ohstem App](https://github.com/kientr2002/TeachableMachineGoogleWithESP32CAM/blob/main/image/Block3.png)
 * Block Code:
     ![Ohstem App](https://github.com/kientr2002/TeachableMachineGoogleWithESP32CAM/blob/main/image/BlockCode.png)
 *  Tutorials:
-  * First, You click run on Ohstem Programming. If it has problem, you should restart programming and Rover.
-
-  * When Ohstem Programming is running. You can start the Python Software Programming. You has the UI like this:
+    * First, You click run on Ohstem Programming. If it has problem, you should restart programming and Rover.
+    * When Ohstem Programming is running. You can start the Python Software Programming. You has the UI like this:
     ![Ohstem App](https://github.com/kientr2002/TeachableMachineGoogleWithESP32CAM/blob/main/image/GUI.png)
-   * You can click Setting, choose Setting Value, enter some information and click "start camera". if everything is ok and you want to send the information to Ohstem Server, click "Send to MQTT". You can give some testcase and test in Ohstem server you created.
-   * 
+    * You can click Setting, choose Setting Value, enter some information and click "start camera". if everything is ok and you want to send the information to Ohstem Server, click "Send to MQTT". You can give some testcase and test in Ohstem server you created.
    * In rover, you must place in the map and click button A to start Rover. 
  
   
