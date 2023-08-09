@@ -46,7 +46,7 @@
     * First, You click run on Ohstem Programming. If it has problem, you should restart programming and Rover.
     * When Ohstem Programming is running. You can start the Python Software Programming. You has the UI like this:
     ![Ohstem App](https://github.com/kientr2002/TeachableMachineGoogleWithESP32CAM/blob/main/image/GUI.png)
-    * You can click Setting, choose Setting Value, enter some information and click "start camera". if everything is ok and you want to send the information to Ohstem Server, click "Send to MQTT". You can give some testcase and test in Ohstem server you created.
+    * You can click Setting, choose Setting Value, enter some information and click "start camera". if everything is ok and you want to send the information to Ohstem Server, click "Send to MQTT". You can give some testcase (using samples in AIModelPicture) and test in Ohstem server you created.
    * In rover, you must place in the map and click button A to start Rover. 
  
   
